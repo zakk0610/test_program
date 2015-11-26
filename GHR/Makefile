@@ -3,7 +3,7 @@ all: a.out
 .SUFFIXES:
 .PHONY: a.out
 
-flag = -g
+flag = -g -Wall -DDEBUG
 
 clean:
 	rm *.o -f
