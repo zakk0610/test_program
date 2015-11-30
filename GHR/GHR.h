@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-template<unsigned int value_size>
+template<unsigned value_size>
 class GHR {
 public:
   GHR(unsigned long long init = 0):digit(init) {}
@@ -29,16 +29,26 @@ public:
     return temp;
   }
 
-  GHR<value_size> operator|(unsigned int rhs) {
+  GHR<value_size> operator|(unsigned rhs) {
     GHR<value_size> temp = *this;
     temp.digit |= rhs;
     return temp;
   }
 
-  GHR<value_size> operator<<(const unsigned int rhs) {
+  GHR<value_size> operator<<(const unsigned rhs) {
     GHR<value_size> temp = *this;
     temp.digit = temp.digit << rhs;
     return temp;
+  }
+
+  // GHR25_fold5 = GHR[4:0] ^ GHR [9:5] ^ GHR [14:10] ^ GHR [19:15] ^ GHR[24:20]
+  // GHR72_fold6 =
+  // GHR147_fold7 =
+  // getIndex(25,5)
+  GHR<value_size> getIndex(unsigned bitNumber, unsigned fold) {
+    std::bitset<value_size> tmp = (digit << (value_size - bitNumber)) >> bitNumber;
+
+
   }
 
   void set() {
