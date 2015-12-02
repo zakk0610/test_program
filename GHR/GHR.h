@@ -62,32 +62,24 @@ private:
 template <unsigned value_size>
 GHR<value_size> GHR<value_size>::caculateGHR(unsigned GHRBitNumber,
                                              unsigned fold) {
+  std::bitset<value_size> result;
   std::bitset<value_size> useField =
       (digit << (value_size - GHRBitNumber)) >> (value_size - GHRBitNumber);
-  assert((GHRBitNumber % fold) == 0 && "GHRBitNumber can't divided by fold\n");
 
-  unsigned sifhtRightWidth = value_size - fold;
-  unsigned i = 0;
-  std::bitset<value_size> result =
-      (useField << (value_size - fold * (i + 1))) >> sifhtRightWidth;
-#ifdef DEBUG
-  std::cout << "digit:" << digit << std::endl;
-  std::cout << "useField:\n" << useField << std::endl;
-  std::cout << "GHR:[ " << fold * (i + 1) - 1 << ":" << fold * i << "]:\n"
-            << result << std::endl;
-#endif
-  for (i += 1; i < GHRBitNumber / fold; ++i) {
-    std::bitset<value_size> tmp =
-        (useField << (value_size - fold * (i + 1))) >> sifhtRightWidth;
-#ifdef DEBUG
-    std::cout << "GHR:[ " << fold * (i + 1) - 1 << ":" << fold * i << "]:\n"
-              << tmp << std::endl;
-#endif
-    result = result ^ tmp;
+  if (fold != 0) {
+    assert((GHRBitNumber % fold) == 0 && "GHRBitNumber can't divided by fold\n");
+    unsigned sifhtWidth = value_size - fold ;
+    unsigned i = 0;
+    std::bitset<value_size> result =
+      (useField << sifhtWidth) >> (value_size - fold);
+    for (i += 1; i < GHRBitNumber / fold; ++i) {
+      std::bitset<value_size> tmp =
+        (useField << (value_size - fold * (i + 1))) >> (value_size - fold);
+      result = result ^ tmp;
+    }
+  } else {
+    result = (useField << value_size - GHRBitNumber) >> (value_size - GHRBitNumber);
   }
-#ifdef DEBUG
-  std::cout << "result:\n" << result << std::endl;
-#endif
   GHR<value_size> resultGHR;
   resultGHR.digit |= result;
   return resultGHR;
